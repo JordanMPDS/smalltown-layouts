@@ -1,0 +1,35 @@
+{{ $action := .Site.Params.contact_form_action | default "https://formspree.io/f/YOUR_FORM_ID" }}
+<form action="{{ $action }}" method="POST" class="contact-form" style="max-width:540px;margin-top:1rem;">
+
+  <div style="margin-bottom:1rem;">
+    <label for="cf-name" style="display:block;font-weight:600;margin-bottom:.35rem;">Your Name</label>
+    <input type="text" id="cf-name" name="name" required placeholder="Jane Smith"
+      style="width:100%;padding:.65rem .85rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:1rem;">
+  </div>
+
+  <div style="margin-bottom:1rem;">
+    <label for="cf-phone" style="display:block;font-weight:600;margin-bottom:.35rem;">
+      Phone <span style="font-weight:400;color:#6b7280;">(optional)</span>
+    </label>
+    <input type="tel" id="cf-phone" name="phone" placeholder="(573) 555-0100"
+      style="width:100%;padding:.65rem .85rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:1rem;">
+  </div>
+
+  <div style="margin-bottom:1rem;">
+    <label for="cf-email" style="display:block;font-weight:600;margin-bottom:.35rem;">Email Address</label>
+    <input type="email" id="cf-email" name="email" required placeholder="you@example.com"
+      style="width:100%;padding:.65rem .85rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:1rem;">
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <label for="cf-message" style="display:block;font-weight:600;margin-bottom:.35rem;">Message</label>
+    <textarea id="cf-message" name="message" required rows="5" placeholder="What can we help you with?"
+      style="width:100%;padding:.65rem .85rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:1rem;resize:vertical;"></textarea>
+  </div>
+
+  <button type="submit"
+    style="background:#b45309;color:white;font-weight:700;padding:.75rem 1.75rem;border:none;border-radius:.5rem;font-size:1rem;cursor:pointer;">
+    Send Message
+  </button>
+
+</form>

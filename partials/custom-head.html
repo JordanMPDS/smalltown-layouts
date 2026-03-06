@@ -1,0 +1,64 @@
+{{- $p := .Site.Params -}}
+{{- $h := $p.hours -}}
+
+{{/* ── Build openingHoursSpecification array ── */}}
+{{- $ohrs := slice -}}
+{{- $days := slice
+  (dict "day" "Monday"    "val" $h.monday)
+  (dict "day" "Tuesday"   "val" $h.tuesday)
+  (dict "day" "Wednesday" "val" $h.wednesday)
+  (dict "day" "Thursday"  "val" $h.thursday)
+  (dict "day" "Friday"    "val" $h.friday)
+  (dict "day" "Saturday"  "val" $h.saturday)
+  (dict "day" "Sunday"    "val" $h.sunday)
+-}}
+{{- range $days -}}
+  {{- if .val -}}
+    {{- $parts := split .val " – " -}}
+    {{- $ohrs = $ohrs | append (dict
+      "@type"     "OpeningHoursSpecification"
+      "dayOfWeek" .day
+      "opens"     (index $parts 0)
+      "closes"    (index $parts 1)
+    ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{/* ── Build sameAs array ── */}}
+{{- $sameAs := slice -}}
+{{- with $p.social.facebook  }}{{- $sameAs = $sameAs | append . -}}{{- end -}}
+{{- with $p.social.instagram }}{{- $sameAs = $sameAs | append . -}}{{- end -}}
+{{- with $p.social.youtube   }}{{- $sameAs = $sameAs | append . -}}{{- end -}}
+{{- with $p.google_business_url }}{{- $sameAs = $sameAs | append . -}}{{- end -}}
+
+{{/* ── Build address object ── */}}
+{{- $address := dict
+  "@type"           "PostalAddress"
+  "streetAddress"   ($p.address_street   | default "")
+  "addressLocality" ($p.address_city     | default "")
+  "addressRegion"   ($p.address_state    | default "")
+  "postalCode"      ($p.address_zip      | default "")
+  "addressCountry"  "US"
+-}}
+
+{{/* ── Assemble full schema object ── */}}
+{{- $schema := dict
+  "@context"                  "https://schema.org"
+  "@type"                     "LocalBusiness"
+  "name"                      .Site.Title
+  "url"                       .Site.BaseURL
+  "description"               ($p.description | default "")
+  "telephone"                 ($p.phone_raw   | default "")
+  "email"                     ($p.email       | default "")
+  "logo"                      (absURL ($p.logo | default ""))
+  "address"                   $address
+  "openingHoursSpecification" $ohrs
+  "sameAs"                    $sameAs
+  "priceRange"                "$$"
+-}}
+{{- with $p.tagline }}{{- $schema = merge $schema (dict "slogan" .) -}}{{- end -}}
+{{- with $p.google_maps_url }}{{- $schema = merge $schema (dict "hasMap" .) -}}{{- end -}}
+
+<script type="application/ld+json">
+{{- $schema | jsonify (dict "indent" "  ") | safeJS }}
+</script>

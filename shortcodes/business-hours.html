@@ -1,0 +1,23 @@
+{{ $h := .Site.Params.hours }}
+{{ if $h }}
+<table style="width:100%;border-collapse:collapse;margin:1rem 0;">
+  <thead>
+    <tr>
+      <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid #e5e7eb;font-weight:700;">Day</th>
+      <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid #e5e7eb;font-weight:700;">Hours</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ with $h.monday    }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Monday</td>   <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+    {{ with $h.tuesday   }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Tuesday</td>  <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+    {{ with $h.wednesday }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Wednesday</td><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+    {{ with $h.thursday  }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Thursday</td> <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+    {{ with $h.friday    }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Friday</td>   <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+    {{ with $h.saturday  }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Saturday</td> <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+    {{ with $h.sunday    }}<tr><td style="padding:.5rem .75rem;">Sunday</td>   <td style="padding:.5rem .75rem;">{{ . }}</td></tr>{{ end }}
+  </tbody>
+</table>
+{{ with $h.notes }}
+<p style="font-size:.9rem;color:#6b7280;margin-top:.5rem;">{{ . }}</p>
+{{ end }}
+{{ end }}
