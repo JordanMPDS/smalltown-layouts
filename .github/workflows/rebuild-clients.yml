@@ -1,0 +1,56 @@
+name: Rebuild all client sites
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  rebuild-clients:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger rebuild on all Cloudflare Pages projects
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -e
+
+          # Fetch all Pages projects (up to 100)
+          projects=$(curl -sf \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects?per_page=100" \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            | jq -r '.result[].name')
+
+          if [ -z "$projects" ]; then
+            echo "No Pages projects found."
+            exit 0
+          fi
+
+          echo "Projects to rebuild:"
+          echo "$projects"
+
+          failed=0
+          while IFS= read -r project; do
+            echo ""
+            echo "Triggering: $project"
+            response=$(curl -sf -X POST \
+              "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${project}/deployments" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json")
+            deploy_id=$(echo "$response" | jq -r '.result.id // empty')
+            if [ -n "$deploy_id" ]; then
+              echo "  ✓ Deployment triggered: $deploy_id"
+            else
+              echo "  ✗ Failed: $(echo "$response" | jq -r '.errors')"
+              failed=$((failed + 1))
+            fi
+          done <<< "$projects"
+
+          if [ $failed -gt 0 ]; then
+            echo ""
+            echo "$failed project(s) failed to trigger."
+            exit 1
+          fi
+
+          echo ""
+          echo "All client sites queued for rebuild."
