@@ -17,7 +17,7 @@ jobs:
 
           # Fetch all Pages projects (up to 100)
           projects=$(curl -sf \
-            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects?per_page=100" \
+            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects" \
             -H "Authorization: Bearer ${CF_API_TOKEN}" \
             | jq -r '.result[].name')
 
