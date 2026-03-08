@@ -15,12 +15,14 @@
 {{- range $days -}}
   {{- if .val -}}
     {{- $parts := split .val " – " -}}
-    {{- $ohrs = $ohrs | append (dict
-      "@type"     "OpeningHoursSpecification"
-      "dayOfWeek" .day
-      "opens"     (index $parts 0)
-      "closes"    (index $parts 1)
-    ) -}}
+    {{- if ge (len $parts) 2 -}}
+      {{- $ohrs = $ohrs | append (dict
+        "@type"     "OpeningHoursSpecification"
+        "dayOfWeek" .day
+        "opens"     (index $parts 0)
+        "closes"    (index $parts 1)
+      ) -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 
