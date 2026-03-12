@@ -109,6 +109,7 @@
             </div>
 
             <!-- Column 2 -->
+            {{ if .Site.Menus.footer_column_2 }}
             <div class="flex-1">
                 <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4">{{ .Site.Params.footer.column_2_title }}</h3>
                 <ul class="space-y-2">
@@ -117,8 +118,10 @@
                     {{ end }}
                 </ul>
             </div>
+            {{ end }}
 
             <!-- Column 3 -->
+            {{ if .Site.Menus.footer_column_3 }}
             <div class="flex-1">
                 <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4">{{ .Site.Params.footer.column_3_title }}</h3>
                 <ul class="space-y-2">
@@ -127,6 +130,7 @@
                     {{ end }}
                 </ul>
             </div>
+            {{ end }}
         </div>
 
         <!-- Bottom -->
