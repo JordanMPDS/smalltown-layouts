@@ -14,6 +14,7 @@
                     {{ end }}
                     {{ if .Site.Title }}
                         <span class="text-sm font-semibold text-gray-800 leading-tight md:hidden">{{ .Site.Title }}</span>
+                        <span class="hidden md:block text-sm font-bold text-gray-900 leading-tight">{{ .Site.Title }}</span>
                     {{ end }}
                 </a>
 
@@ -47,7 +48,7 @@
 
                 <!-- CTA Buttons -->
                 {{ if not $headerConfig.hideButtons }}
-                <div class="hidden md:flex items-center space-x-4">
+                <div class="hidden lg:flex items-center space-x-4">
                     {{ with $headerConfig.buttons.signIn }}
                     <a href="{{ .url | default "#" }}" class="{{ with .class }}{{ . }}{{ else }}inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out border-2 border-gray-200 hover:border-primary-600 hover:text-primary-600{{ end }}">
                         {{ .text | default "Sign in" }}
