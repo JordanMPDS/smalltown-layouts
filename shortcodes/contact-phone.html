@@ -1,1 +1,1 @@
-<a href="tel:{{ site.Params.phone_raw }}">{{ site.Params.phone }}</a>
+<a href="{{ printf "tel:%s" site.Params.phone_raw | safeURL }}">{{ site.Params.phone }}</a>

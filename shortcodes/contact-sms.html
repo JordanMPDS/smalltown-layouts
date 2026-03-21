@@ -1,1 +1,1 @@
-<a href="sms:{{ site.Params.sms_number }}">{{ site.Params.phone }}</a>
+<a href="{{ printf "sms:%s" site.Params.sms_number | safeURL }}">{{ site.Params.phone }}</a>
