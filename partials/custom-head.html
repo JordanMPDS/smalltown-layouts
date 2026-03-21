@@ -38,12 +38,14 @@
 {{/* ── Build address object ── */}}
 {{- $address := dict
   "@type"           "PostalAddress"
-  "streetAddress"   ($p.address_street   | default "")
-  "addressLocality" ($p.address_city     | default "")
-  "addressRegion"   ($p.address_state    | default "")
-  "postalCode"      ($p.address_zip      | default "")
+  "addressLocality" ($p.address_city  | default "")
+  "addressRegion"   ($p.address_state | default "")
+  "postalCode"      ($p.address_zip   | default "")
   "addressCountry"  "US"
 -}}
+{{- with $p.address_street -}}
+  {{- $address = merge $address (dict "streetAddress" .) -}}
+{{- end -}}
 
 {{/* ── Assemble full schema object ── */}}
 {{- $schema := dict
