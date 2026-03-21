@@ -16,6 +16,9 @@
                         </a>
                     {{ end }}
                     {{ with .Site.Params.cta.secondary_button }}
+                        <a href="/contact/" class="btn border-2 border-white text-white hover:bg-white hover:text-primary-700 transition-colors duration-200">
+                            Get a Free Estimate
+                        </a>
                         <a href="{{ .url | safeURL }}" class="btn border-2 border-white text-white hover:bg-primary-700">
                             {{ .text }}
                         </a>

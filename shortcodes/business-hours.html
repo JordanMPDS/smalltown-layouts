@@ -1,5 +1,6 @@
 {{ $h := .Site.Params.hours }}
 {{ if $h }}
+<div class="max-w-sm">
 <table style="width:100%;border-collapse:collapse;margin:1rem 0;">
   <thead>
     <tr>
@@ -20,4 +21,5 @@
 {{ with $h.notes }}
 <p style="font-size:.9rem;color:#6b7280;margin-top:.5rem;">{{ . }}</p>
 {{ end }}
+</div>
 {{ end }}
