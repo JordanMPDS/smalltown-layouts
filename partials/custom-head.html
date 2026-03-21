@@ -65,6 +65,11 @@
 {{- with $p.tagline }}{{- $schema = merge $schema (dict "slogan" .) -}}{{- end -}}
 {{- with $p.google_maps_url }}{{- $schema = merge $schema (dict "hasMap" .) -}}{{- end -}}
 
+{{ with $p.logo }}
+<meta property="og:image" content="{{ . | absURL }}">
+<meta property="og:image:alt" content="{{ $.Site.Title }}">
+{{ end }}
+
 <script type="application/ld+json">
 {{- $schema | jsonify (dict "indent" "  ") | safeJS }}
 </script>
