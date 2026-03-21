@@ -1,9 +1,13 @@
 {{- /*
   Override of themes/hugo-saasify-theme/layouts/shortcodes/hero.html
   Pinned against theme v1.0.2.
-  Change: added | safeURL to $primary_button_url and $secondary_button_url
-  href attributes so that tel: and sms: URL schemes render correctly
-  instead of being sanitized to #ZgotmplZ.
+  Changes:
+    1. Added | safeURL to $primary_button_url and $secondary_button_url href
+       attributes so that tel: and sms: URL schemes render correctly instead
+       of being sanitized to #ZgotmplZ.
+    2. Text column uses order-last lg:order-first and image column uses
+       order-first lg:order-last so the hero image appears above the headline
+       on mobile (better visual hierarchy) and reverts to image-right on desktop.
   Do not edit the theme file directly.
 */ -}}
 {{ $headline := .Get "headline" }}

@@ -1,4 +1,17 @@
-{{- /* Override: wrapped in w-64 flex-shrink-0 so single card centers in flex justify-center grid; LinkedIn icon changed to text-primary-600 to match brand */ -}}
+{{- /*
+  Override of themes/hugo-saasify-theme/layouts/shortcodes/team-member.html
+  Changes:
+    1. Root div has w-64 flex-shrink-0 instead of the theme's fluid width so
+       a single card centers correctly when the parent is a flex justify-center
+       container. Implicit dependency: this shortcode must be called inside a
+       wrapper that carries "flex flex-wrap justify-center gap-8" (or equivalent)
+       — currently the about.md team section. Removing that wrapper or changing
+       it to a block/grid without justify-center will cause the card to stretch
+       full-width instead of sitting centered.
+    2. LinkedIn icon color changed from text-blue-600 to text-primary-600 to
+       match the client brand palette.
+  Do not edit the theme file directly.
+*/ -}}
 <div class="team-member text-center w-64 flex-shrink-0">
     <div class="relative mb-4 rounded-lg overflow-hidden aspect-square">
         {{ if .Get "image" }}
