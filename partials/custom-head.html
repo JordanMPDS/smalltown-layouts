@@ -73,3 +73,95 @@
 <script type="application/ld+json">
 {{- $schema | jsonify (dict "indent" "  ") | safeJS }}
 </script>
+
+{{ if and hugo.IsProduction .Site.Params.googleAnalytics }}
+<script>
+(function() {
+  if (typeof gtag !== 'function') return;
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Click event delegation ---
+    document.body.addEventListener('click', function(e) {
+      var link = e.target.closest('a[href]');
+      if (!link) return;
+
+      var href = link.getAttribute('href') || '';
+
+      // Click to call
+      if (href.indexOf('tel:') === 0) {
+        gtag('event', 'click_to_call', {
+          event_label: href.replace('tel:', ''),
+          transport_type: 'beacon'
+        });
+        return;
+      }
+
+      // SMS click
+      if (href.indexOf('sms:') === 0) {
+        gtag('event', 'sms_click', {
+          event_label: href.replace('sms:', ''),
+          transport_type: 'beacon'
+        });
+        return;
+      }
+
+      // Email click
+      if (href.indexOf('mailto:') === 0) {
+        gtag('event', 'email_click', {
+          event_label: href.replace('mailto:', ''),
+          transport_type: 'beacon'
+        });
+        return;
+      }
+
+      // Directions click (Google Maps links)
+      if (href.indexOf('maps.google') !== -1 ||
+          href.indexOf('google.com/maps') !== -1 ||
+          href.indexOf('goo.gl/maps') !== -1) {
+        gtag('event', 'directions_click', {
+          event_label: href,
+          method: 'map_link',
+          transport_type: 'beacon'
+        });
+        return;
+      }
+
+      // Social click (outbound links in footer)
+      var footer = link.closest('footer');
+      if (footer) {
+        try {
+          var linkHost = new URL(href, window.location.origin).hostname;
+          if (linkHost && linkHost !== window.location.hostname) {
+            var platform = linkHost.replace('www.', '').split('.')[0];
+            gtag('event', 'social_click', {
+              event_label: platform,
+              transport_type: 'beacon'
+            });
+          }
+        } catch(ignored) {}
+      }
+    });
+
+    // --- Form submission tracking ---
+    var form = document.querySelector('form[action*="formspree"]');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var submitted = false;
+        function go() {
+          if (!submitted) { submitted = true; form.submit(); }
+        }
+        gtag('event', 'form_submission', {
+          event_label: 'contact_form',
+          transport_type: 'beacon',
+          event_callback: go
+        });
+        setTimeout(go, 1000);
+      });
+    }
+
+  });
+})();
+</script>
+{{ end }}
