@@ -65,6 +65,62 @@
 {{- with $p.tagline }}{{- $schema = merge $schema (dict "slogan" .) -}}{{- end -}}
 {{- with $p.google_maps_url }}{{- $schema = merge $schema (dict "hasMap" .) -}}{{- end -}}
 
+{{/* ── Multi-location: build department array ── */}}
+{{- $locations := $p.locations -}}
+{{- if and $locations (gt (len $locations) 1) -}}
+  {{- $departments := slice -}}
+  {{- range $locations -}}
+    {{- $locAddr := dict
+      "@type"           "PostalAddress"
+      "addressLocality" (.address_city  | default "")
+      "addressRegion"   (.address_state | default "")
+      "postalCode"      (.address_zip   | default "")
+      "addressCountry"  "US"
+    -}}
+    {{- with .address_street -}}
+      {{- $locAddr = merge $locAddr (dict "streetAddress" .) -}}
+    {{- end -}}
+
+    {{- $locHours := slice -}}
+    {{- with .hours -}}
+      {{- $locDays := slice
+        (dict "day" "Monday"    "val" .monday)
+        (dict "day" "Tuesday"   "val" .tuesday)
+        (dict "day" "Wednesday" "val" .wednesday)
+        (dict "day" "Thursday"  "val" .thursday)
+        (dict "day" "Friday"    "val" .friday)
+        (dict "day" "Saturday"  "val" .saturday)
+        (dict "day" "Sunday"    "val" .sunday)
+      -}}
+      {{- range $locDays -}}
+        {{- if .val -}}
+          {{- $locParts := split .val " – " -}}
+          {{- if ge (len $locParts) 2 -}}
+            {{- $locHours = $locHours | append (dict
+              "@type"     "OpeningHoursSpecification"
+              "dayOfWeek" .day
+              "opens"     (index $locParts 0)
+              "closes"    (index $locParts 1)
+            ) -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- $dept := dict
+      "@type"                     "LocalBusiness"
+      "name"                      (printf "%s — %s" $.Site.Title .name)
+      "telephone"                 (.phone_raw | default "")
+      "email"                     (.email     | default "")
+      "address"                   $locAddr
+      "openingHoursSpecification" $locHours
+    -}}
+    {{- with .google_maps_url }}{{- $dept = merge $dept (dict "hasMap" .) -}}{{- end -}}
+    {{- $departments = $departments | append $dept -}}
+  {{- end -}}
+  {{- $schema = merge $schema (dict "department" $departments) -}}
+{{- end -}}
+
 {{ with $p.logo }}
 <meta property="og:image" content="{{ . | absURL }}">
 <meta property="og:image:alt" content="{{ $.Site.Title }}">

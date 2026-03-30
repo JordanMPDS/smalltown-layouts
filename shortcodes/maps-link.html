@@ -1,1 +1,2 @@
-{{ with site.Params.google_maps_url }}<a href="{{ . }}" target="_blank" rel="noopener">→ View on Google Maps</a>{{ end }}
+{{- $loc := partial "resolve-location" (dict "location" (.Get "location" | default "")) -}}
+{{ with $loc.google_maps_url }}<a href="{{ . }}" target="_blank" rel="noopener">→ View on Google Maps</a>{{ end }}

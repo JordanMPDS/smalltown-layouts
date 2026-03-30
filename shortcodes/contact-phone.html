@@ -1,1 +1,4 @@
-<a href="{{ printf "tel:%s" site.Params.phone_raw | safeURL }}">{{ site.Params.phone }}</a>
+{{- $loc := partial "resolve-location" (dict "location" (.Get "location" | default "")) -}}
+{{- if $loc.phone -}}
+<a href="{{ printf "tel:%s" $loc.phone_raw | safeURL }}">{{ $loc.phone }}</a>
+{{- end -}}

@@ -1,5 +1,7 @@
-{{ $h := .Site.Params.hours }}
+{{- $loc := partial "resolve-location" (dict "location" (.Get "location" | default "")) -}}
+{{- $h := $loc.hours -}}
 {{ if $h }}
+{{ with $loc.name }}<h3 style="font-size:1.25rem;font-weight:700;margin-bottom:.5rem;">{{ . }}</h3>{{ end }}
 <div class="max-w-sm">
 <table style="width:100%;border-collapse:collapse;margin:1rem 0;">
   <thead>

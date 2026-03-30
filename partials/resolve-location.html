@@ -1,0 +1,42 @@
+{{/* resolve-location.html — Two-tier location fallback
+     Requires Hugo >= 0.91.0 for return support
+
+     Input: dict with key "location" (slug string, may be empty)
+     Returns: dict with location fields, or built from top-level params
+
+     Tier 1: Explicit slug — find matching entry in site.Params.locations
+     Tier 2: Top-level site.Params (backwards compat, always works)
+*/}}
+
+{{- $slug := .location -}}
+{{- $locations := site.Params.locations -}}
+{{- $result := dict -}}
+
+{{- if and $slug $locations -}}
+  {{/* Tier 1: explicit slug match */}}
+  {{- $matches := where $locations "slug" $slug -}}
+  {{- if gt (len $matches) 0 -}}
+    {{- $result = index $matches 0 -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if not (index $result "phone") -}}
+  {{/* Tier 2: top-level params */}}
+  {{- $result = dict
+    "name"              ""
+    "slug"              ""
+    "phone"             (site.Params.phone             | default "")
+    "phone_raw"         (site.Params.phone_raw         | default "")
+    "sms_number"        (site.Params.sms_number        | default "")
+    "email"             (site.Params.email             | default "")
+    "address_street"    (site.Params.address_street    | default "")
+    "address_city"      (site.Params.address_city      | default "")
+    "address_state"     (site.Params.address_state     | default "")
+    "address_zip"       (site.Params.address_zip       | default "")
+    "google_maps_url"   (site.Params.google_maps_url   | default "")
+    "google_maps_embed" (site.Params.google_maps_embed | default "")
+    "hours"             (site.Params.hours             | default dict)
+  -}}
+{{- end -}}
+
+{{- return $result -}}

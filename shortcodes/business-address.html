@@ -1,1 +1,2 @@
-{{ site.Params.address_street }}, {{ site.Params.address_city }}, {{ site.Params.address_state }} {{ site.Params.address_zip }}
+{{- $loc := partial "resolve-location" (dict "location" (.Get "location" | default "")) -}}
+{{ $loc.address_street }}, {{ $loc.address_city }}, {{ $loc.address_state }} {{ $loc.address_zip }}

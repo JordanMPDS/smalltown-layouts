@@ -1,0 +1,138 @@
+{{ define "main" }}
+{{- $loc := partial "resolve-location" (dict "location" (.Params.location_slug | default "")) -}}
+<article class="location-page">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8 pt-24 pb-16 sm:pt-32">
+
+    <!-- Location Name -->
+    <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-8">{{ with $loc.name }}{{ . }}{{ else }}{{ .Title }}{{ end }}</h1>
+
+    <!-- Address -->
+    {{ if $loc.address_street }}
+    <p class="text-lg text-gray-600 mb-10">
+      {{ $loc.address_street }}, {{ $loc.address_city }}, {{ $loc.address_state }} {{ $loc.address_zip }}
+    </p>
+    {{ end }}
+
+    <!-- Two-column grid: Contact Info | Hours -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+
+      <!-- Contact Info -->
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Contact</h2>
+        <dl class="space-y-4">
+          {{ with $loc.phone }}
+          <div class="flex items-start gap-3">
+            <dt class="font-semibold text-gray-900 min-w-[5rem]">Phone</dt>
+            <dd><a href="{{ printf "tel:%s" $loc.phone_raw | safeURL }}" class="text-primary-700 hover:text-primary-800 font-medium">{{ . }}</a></dd>
+          </div>
+          {{ end }}
+          {{ with $loc.email }}
+          <div class="flex items-start gap-3">
+            <dt class="font-semibold text-gray-900 min-w-[5rem]">Email</dt>
+            <dd><a href="{{ printf "mailto:%s" . | safeURL }}" class="text-primary-700 hover:text-primary-800 font-medium">{{ . }}</a></dd>
+          </div>
+          {{ end }}
+          {{ with $loc.sms_number }}
+          <div class="flex items-start gap-3">
+            <dt class="font-semibold text-gray-900 min-w-[5rem]">Text</dt>
+            <dd><a href="{{ printf "sms:%s" . | safeURL }}" class="text-primary-700 hover:text-primary-800 font-medium">Send a text</a></dd>
+          </div>
+          {{ end }}
+          {{ with $loc.google_maps_url }}
+          <div class="flex items-start gap-3">
+            <dt class="font-semibold text-gray-900 min-w-[5rem]">Directions</dt>
+            <dd><a href="{{ . }}" target="_blank" rel="noopener" class="text-primary-700 hover:text-primary-800 font-medium">View on Google Maps &rarr;</a></dd>
+          </div>
+          {{ end }}
+        </dl>
+      </div>
+
+      <!-- Hours -->
+      {{ with $loc.hours }}
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Hours</h2>
+        <table style="width:100%;max-width:24rem;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid #e5e7eb;font-weight:700;">Day</th>
+              <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid #e5e7eb;font-weight:700;">Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{ with .monday    }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Monday</td>   <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+            {{ with .tuesday   }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Tuesday</td>  <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+            {{ with .wednesday }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Wednesday</td><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+            {{ with .thursday  }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Thursday</td> <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+            {{ with .friday    }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Friday</td>   <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+            {{ with .saturday  }}<tr><td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">Saturday</td> <td style="padding:.5rem .75rem;border-bottom:1px solid #f3f4f6;">{{ . }}</td></tr>{{ end }}
+            {{ with .sunday    }}<tr><td style="padding:.5rem .75rem;">Sunday</td>   <td style="padding:.5rem .75rem;">{{ . }}</td></tr>{{ end }}
+          </tbody>
+        </table>
+        {{ with .notes }}
+        <p style="font-size:.9rem;color:#6b7280;margin-top:.5rem;">{{ . }}</p>
+        {{ end }}
+      </div>
+      {{ end }}
+
+    </div>
+
+    <!-- Google Maps Embed -->
+    {{ with $loc.google_maps_embed }}
+    <div class="mb-12">
+      <iframe src="{{ . }}" width="100%" height="400" style="border:0;border-radius:.75rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    {{ end }}
+
+    <!-- Contact Form -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
+      {{ $action := .Site.Params.contact_form_action | default "https://formspree.io/f/YOUR_FORM_ID" }}
+      <form action="{{ $action }}" method="POST" class="contact-form" style="max-width:540px;">
+        <input type="hidden" name="location" value="{{ $loc.slug }}">
+
+        <div style="margin-bottom:1rem;">
+          <label for="cf-name" style="display:block;font-weight:600;margin-bottom:.35rem;">Your Name</label>
+          <input type="text" id="cf-name" name="name" required placeholder="Jane Smith"
+            style="width:100%;padding:.65rem .85rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:1rem;">
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label for="cf-phone" style="display:block;font-weight:600;margin-bottom:.35rem;">
+            Phone <span style="font-weight:400;color:#6b7280;">(optional)</span>
+          </label>
+          <input type="tel" id="cf-phone" name="phone" placeholder="(555) 555-0100"
+            style="width:100%;padding:.65rem .85rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:1rem;">
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label for="cf-email" style="display:block;font-weight:600;margin-bottom:.35rem;">Email Address</label>
+          <input type="email" id="cf-email" name="email" required placeholder="you@example.com"
+            style="width:100%;padding:.65rem .85rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:1rem;">
+        </div>
+
+        <div style="margin-bottom:1.25rem;">
+          <label for="cf-message" style="display:block;font-weight:600;margin-bottom:.35rem;">Message</label>
+          <textarea id="cf-message" name="message" required rows="5" placeholder="What can we help you with?"
+            style="width:100%;padding:.65rem .85rem;border:1px solid #d1d5db;border-radius:.5rem;font-size:1rem;resize:vertical;"></textarea>
+        </div>
+
+        <button type="submit"
+          style="background:#b45309;color:white;font-weight:700;padding:.75rem 1.75rem;border:none;border-radius:.5rem;font-size:1rem;cursor:pointer;">
+          Send Message
+        </button>
+      </form>
+    </div>
+
+    <!-- Page Content (markdown body) -->
+    {{ with .Content }}
+    <div class="prose prose-lg mx-auto">
+      {{ . }}
+    </div>
+    {{ end }}
+
+  </div>
+
+  <!-- Global CTA -->
+  {{ partial "components/cta.html" . }}
+</article>
+{{ end }}

@@ -1,1 +1,4 @@
-<a href="{{ printf "mailto:%s" site.Params.email | safeURL }}">{{ site.Params.email }}</a>
+{{- $loc := partial "resolve-location" (dict "location" (.Get "location" | default "")) -}}
+{{- if $loc.email -}}
+<a href="{{ printf "mailto:%s" $loc.email | safeURL }}">{{ $loc.email }}</a>
+{{- end -}}

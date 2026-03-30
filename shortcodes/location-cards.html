@@ -1,0 +1,21 @@
+{{- $locations := site.Params.locations -}}
+{{- if and $locations (gt (len $locations) 0) -}}
+<div class="location-cards-grid" style="display:grid;grid-template-columns:1fr;gap:1.5rem;margin:2rem 0;">
+  {{- range $locations }}
+  {{- $phoneRaw := .phone_raw | default "" -}}
+  <div style="border:1px solid #e5e7eb;border-radius:.75rem;padding:1.5rem;background:#fff;">
+    <h3 style="font-size:1.25rem;font-weight:700;margin:0 0 .5rem;">{{ .name }}</h3>
+    {{ if .address_street }}
+    <p style="color:#4b5563;margin:0 0 .75rem;">{{ .address_street }}{{ with .address_city }}, {{ . }}{{ end }}{{ with .address_state }}, {{ . }}{{ end }} {{ with .address_zip }}{{ . }}{{ end }}</p>
+    {{ end }}
+    {{ with .phone }}
+    <p style="margin:0 0 .75rem;">
+      <a href="{{ printf "tel:%s" $phoneRaw | safeURL }}" style="color:#b45309;font-weight:600;text-decoration:none;">{{ . }}</a>
+    </p>
+    {{ end }}
+    <a href="/locations/{{ .slug }}/" style="color:#b45309;font-weight:600;text-decoration:none;">View hours &amp; details &rarr;</a>
+  </div>
+  {{- end }}
+</div>
+<style>.location-cards-grid{grid-template-columns:1fr}@media(min-width:768px){.location-cards-grid{grid-template-columns:1fr 1fr}}</style>
+{{- end -}}
