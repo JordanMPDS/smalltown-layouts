@@ -60,10 +60,9 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ .Permalink }}">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Fonts: self-hosted via @font-face in custom-head.html
+         NOTE: The theme's baseof.html (lines 57-59) still has Google Fonts <link> tags.
+         This override suppresses them. Do not delete this file without addressing those. -->
 
     <!-- Main CSS -->
     {{ $css := resources.Get "css/main.css" }}
