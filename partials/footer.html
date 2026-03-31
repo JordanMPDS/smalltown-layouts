@@ -6,7 +6,7 @@
                 <div class="flex items-center space-x-3 mb-4">
                     <a href="{{ .Site.BaseURL }}" class="inline-block">
                         {{ with .Site.Params.logo }}
-                            <img src="{{ . | relURL }}" alt="{{ $.Site.Title }}" class="h-6 w-auto" loading="lazy" decoding="async">
+                            {{ partial "responsive-img.html" (dict "src" . "alt" $.Site.Title "widths" (slice 48 96) "sizes" "24px" "class" "h-6 w-auto" "loading" "lazy") }}
                         {{ end }}
                     </a>
                     <span class="text-xl font-bold text-gray-900">{{ .Site.Title }}</span>

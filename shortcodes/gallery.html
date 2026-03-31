@@ -6,11 +6,11 @@
     {{- range . -}}
       {{- if reflect.IsMap . -}}
     <div class="overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-      <img src="{{ .src }}" alt="{{ .alt }}" class="aspect-[4/3] w-full object-cover" loading="lazy" decoding="async">
+      {{ partial "responsive-img.html" (dict "src" .src "alt" .alt "widths" (slice 400 800) "sizes" "(min-width: 1024px) 33vw, 50vw" "class" "aspect-[4/3] w-full object-cover" "loading" "lazy") }}
     </div>
       {{- else -}}
     <div class="overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-      <img src="{{ . }}" alt="" class="aspect-[4/3] w-full object-cover" loading="lazy" decoding="async">
+      {{ partial "responsive-img.html" (dict "src" . "alt" "" "widths" (slice 400 800) "sizes" "(min-width: 1024px) 33vw, 50vw" "class" "aspect-[4/3] w-full object-cover" "loading" "lazy") }}
     </div>
       {{- end -}}
     {{- end -}}

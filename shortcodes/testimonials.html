@@ -12,9 +12,9 @@
                 {{ range .Page.Params.testimonials }}
                 <div class="testimonial-card">
                     <div class="flex items-center space-x-4 mb-6">
-                        <img src="{{ .avatar | relURL }}" alt="" class="w-12 h-12 rounded-full" width="48" height="48" loading="lazy" decoding="async">
+                        {{ partial "responsive-img.html" (dict "src" .avatar "alt" .name "widths" (slice 48 96) "sizes" "48px" "class" "w-12 h-12 rounded-full" "loading" "lazy") }}
                         <div>
-                            <cite class="font-bold not-italic">{{ .name }}</h4>
+                            <cite class="font-bold not-italic">{{ .name }}</cite>
                             <p class="text-gray-600">{{ .title }}</p>
                         </div>
                     </div>
@@ -25,9 +25,9 @@
                     {{ range .Page.Params.testimonials }}
                     <div class="testimonial-card" aria-hidden="true">
                         <div class="flex items-center space-x-4 mb-6">
-                            <img src="{{ .avatar | relURL }}" alt="" class="w-12 h-12 rounded-full" width="48" height="48" loading="lazy" decoding="async">
+                            {{ partial "responsive-img.html" (dict "src" .avatar "alt" .name "widths" (slice 48 96) "sizes" "48px" "class" "w-12 h-12 rounded-full" "loading" "lazy") }}
                             <div>
-                                <cite class="font-bold not-italic">{{ .name }}</h4>
+                                <cite class="font-bold not-italic">{{ .name }}</cite>
                                 <p class="text-gray-600">{{ .title }}</p>
                             </div>
                         </div>
