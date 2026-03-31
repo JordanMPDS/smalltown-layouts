@@ -53,7 +53,7 @@
             <div class="relative order-first lg:order-last">
                 {{ if $hero_image }}
                 <div class="relative z-10">
-                    <img src="{{ $hero_image | relURL }}" alt="Hero Image" class="rounded-xl shadow-elevation">
+                    <img src="{{ $hero_image | relURL }}" alt="Hero Image" class="rounded-xl shadow-elevation" width="600" height="400" fetchpriority="high">
                 </div>
                 {{ end }}
                 <!-- Background decoration -->

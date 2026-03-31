@@ -126,6 +126,13 @@
 <meta property="og:image:alt" content="{{ $.Site.Title }}">
 {{ end }}
 
+{{/* Override theme .btn-primary: amber-600 (#d97706) fails WCAG AA at 3.18:1.
+     amber-700 (#b45309) passes at 4.68:1. Also bump hover to amber-800. */}}
+<style>
+.btn-primary { background-color: #b45309 !important; }
+.btn-primary:hover { background-color: #92400e !important; }
+</style>
+
 <script type="application/ld+json">
 {{- $schema | jsonify (dict "indent" "  ") | safeJS }}
 </script>

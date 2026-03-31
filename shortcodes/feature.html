@@ -20,7 +20,7 @@
 <div class="grid lg:grid-cols-2 gap-12 items-center" style="--badge-color: {{ $badgeColor }}">
     {{ if eq $imagePosition "left" }}
     <div class="order-2 lg:order-1">
-        <img src="{{ $image | relURL }}" alt="{{ $title }}" class="rounded-xl shadow-elevation">
+        <img src="{{ $image | relURL }}" alt="{{ $title }}" class="rounded-xl shadow-elevation" width="600" height="400" loading="lazy" decoding="async">
     </div>
     {{ end }}
 
@@ -52,7 +52,7 @@
 
     {{ if ne $imagePosition "left" }}
     <div>
-        <img src="{{ $image | relURL }}" alt="{{ $title }}" class="rounded-xl shadow-elevation">
+        <img src="{{ $image | relURL }}" alt="{{ $title }}" class="rounded-xl shadow-elevation" width="600" height="400" loading="lazy" decoding="async">
     </div>
     {{ end }}
 </div>
