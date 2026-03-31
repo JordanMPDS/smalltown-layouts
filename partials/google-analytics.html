@@ -1,0 +1,13 @@
+{{ if and hugo.IsProduction .Site.Params.googleAnalytics }}
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{ .Site.Params.googleAnalytics }}');
+  window.addEventListener('load', function() {
+    var s = document.createElement('script');
+    s.src = 'https://www.googletagmanager.com/gtag/js?id={{ .Site.Params.googleAnalytics }}';
+    document.head.appendChild(s);
+  });
+</script>
+{{ end }}
