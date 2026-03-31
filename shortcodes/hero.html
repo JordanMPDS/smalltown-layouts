@@ -25,7 +25,7 @@
 <section class="relative overflow-hidden" {{ if $gradient_from }}style="background:linear-gradient({{ $gradient_angle }}deg,{{ $gradient_from }},{{ $gradient_to | default $gradient_from }})"{{ else }}class="bg-gradient-to-b from-gray-50 to-white"{{ end }}>
     {{ if $background_image }}
     <div class="absolute inset-0">
-        {{ partial "responsive-img.html" (dict "src" $background_image "alt" "Background" "widths" (slice 640 1024 1440) "sizes" "100vw" "class" "w-full h-full object-cover" "loading" "eager" "fetchpriority" "high") }}
+        {{ partial "responsive-img.html" (dict "src" $background_image "alt" "Background" "sizes" "100vw" "class" "w-full h-full object-cover" "loading" "eager" "fetchpriority" "high") }}
     </div>
     {{ end }}
     <div class="container pt-16 pb-20 md:pt-24 md:pb-28">
@@ -53,7 +53,7 @@
             <div class="relative order-first lg:order-last">
                 {{ if $hero_image }}
                 <div class="relative z-10">
-                    {{ partial "responsive-img.html" (dict "src" $hero_image "alt" "Hero Image" "widths" (slice 640 1024 1440) "sizes" "(min-width: 1024px) 50vw, 100vw" "class" "rounded-xl shadow-elevation" "loading" "eager" "fetchpriority" "high") }}
+                    {{ partial "responsive-img.html" (dict "src" $hero_image "alt" "Hero Image" "sizes" "(min-width: 1024px) 50vw, 100vw" "class" "rounded-xl shadow-elevation" "loading" "eager" "fetchpriority" "high") }}
                 </div>
                 {{ end }}
                 <!-- Background decoration -->

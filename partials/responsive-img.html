@@ -1,11 +1,31 @@
 {{- /*
   responsive-img.html — shared partial for responsive image output.
-  SVGs: served as-is. Raster: resized to WebP with srcset.
-  Callers pass "/images/foo.jpg" — leading "/" is stripped automatically.
+
+  SVGs: served as-is (no processing).
+  Raster: converted to WebP with auto-generated srcset widths.
+
+  Width generation (when caller omits "widths"):
+    - Range: 320px to source width, step 200px
+    - Source width always included as the final entry
+    - Capped at 10 variants; step widens automatically if needed
+    - Never upscales beyond source dimensions
+
+  Callers can still pass explicit "widths" (slice 48 96) for fixed-size
+  images like avatars and logos where the display size is known.
+
+  Parameters:
+    src           — required, e.g. "/images/foo.jpg"
+    alt           — alt text (default "")
+    widths        — explicit width list; omit for auto-generation
+    sizes         — sizes attribute (default "100vw")
+    class         — CSS classes (default "")
+    loading       — "lazy" | "eager" (default "lazy")
+    fetchpriority — "high" | "low" | "" (default "")
+    quality       — WebP quality 1-100 (default 82)
 */ -}}
 {{- $src := .src -}}
 {{- $alt := .alt | default "" -}}
-{{- $widths := .widths | default (slice 400 800) -}}
+{{- $explicitWidths := .widths -}}
 {{- $sizes := .sizes | default "100vw" -}}
 {{- $class := .class | default "" -}}
 {{- $loading := .loading | default "lazy" -}}
@@ -21,6 +41,49 @@
   <img src="{{ $resource.RelPermalink }}" alt="{{ $alt }}"{{ with $class }} class="{{ . }}"{{ end }} loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }} decoding="async">
 {{- else -}}
   {{- $origWidth := $resource.Width -}}
+  {{- /* Determine width list: use explicit if provided, otherwise auto-generate */ -}}
+  {{- $widths := slice -}}
+  {{- if $explicitWidths -}}
+    {{- $widths = $explicitWidths -}}
+  {{- else -}}
+    {{- /* Auto-generate widths from 320 to source width, step 200, capped at 10 variants */ -}}
+    {{- $min := 320 -}}
+    {{- $step := 200 -}}
+    {{- $max := 10 -}}
+    {{- if le $origWidth $min -}}
+      {{- /* Source is tiny — just use its native width */ -}}
+      {{- $widths = slice $origWidth -}}
+    {{- else -}}
+      {{- /* Calculate how many variants the default step produces */ -}}
+      {{- $range := sub $origWidth $min -}}
+      {{- $count := add (div $range $step) 1 -}}
+      {{- /* If source width isn't on a step boundary, we'll add it, so count+1 */ -}}
+      {{- $lastStep := add $min (mul (sub $count 1) $step) -}}
+      {{- $totalWithFinal := $count -}}
+      {{- if ne $lastStep $origWidth -}}
+        {{- $totalWithFinal = add $count 1 -}}
+      {{- end -}}
+      {{- /* Widen step if we'd exceed the cap */ -}}
+      {{- if gt $totalWithFinal $max -}}
+        {{- /* Recalculate step to fit within cap, reserving one slot for origWidth */ -}}
+        {{- $slots := sub $max 1 -}}
+        {{- $step = div $range $slots -}}
+        {{- /* Ensure step is at least 1 to avoid infinite loop */ -}}
+        {{- if lt $step 1 -}}
+          {{- $step = 1 -}}
+        {{- end -}}
+      {{- end -}}
+      {{- /* Build the width list using seq */ -}}
+      {{- $intermediate := slice -}}
+      {{- range $w := seq $min $step $origWidth -}}
+        {{- $intermediate = $intermediate | append $w -}}
+      {{- end -}}
+      {{- /* Trim to (max-1) entries, then always append source width */ -}}
+      {{- $intermediate = first (sub $max 1) $intermediate -}}
+      {{- $widths = $intermediate | append $origWidth -}}
+    {{- end -}}
+  {{- end -}}
+  {{- /* Build srcset from the width list */ -}}
   {{- $srcsetParts := slice -}}
   {{- $largestImg := $resource -}}
   {{- range $w := $widths -}}
