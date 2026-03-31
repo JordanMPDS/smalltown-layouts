@@ -53,7 +53,7 @@
             <div class="relative order-first lg:order-last">
                 {{ if $hero_image }}
                 <div class="relative z-10">
-                    {{ partial "responsive-img.html" (dict "src" $hero_image "alt" "Hero Image" "sizes" "(min-width: 1024px) 50vw, 100vw" "class" "rounded-xl shadow-elevation" "loading" "eager" "fetchpriority" "high") }}
+                    {{ partial "responsive-img.html" (dict "src" $hero_image "alt" "Hero Image" "sizes" "(min-width: 1024px) calc(50vw - 4rem), calc(100vw - 2rem)" "class" "rounded-xl shadow-elevation" "loading" "eager" "fetchpriority" "high") }}
                 </div>
                 {{ end }}
                 <!-- Background decoration -->
