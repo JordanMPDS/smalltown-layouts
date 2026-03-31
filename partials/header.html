@@ -8,7 +8,7 @@
                 <!-- Logo and Title -->
                 <a href="{{ "/" | relLangURL }}" class="flex items-center space-x-4">
                     {{ with $headerConfig.logo }}
-                        <img src="{{ .src | relURL }}" alt="{{ $.Site.Title }}" class="{{ with .class }}{{ . }}{{ else }}h-12{{ end }}" width="{{ .width | default 150 }}" height="{{ .height | default 48 }}" fetchpriority="high">
+                        <img src="{{ .src | relURL }}" alt="{{ $.Site.Title }}" class="{{ with .class }}{{ . }}{{ else }}h-12 w-auto{{ end }}" {{ with .width }}width="{{ . }}"{{ end }} {{ with .height }}height="{{ . }}"{{ end }} fetchpriority="high">
                     {{ else }}
                         <span class="text-base font-bold text-gray-900">{{ .Site.Title }}</span>
                     {{ end }}
