@@ -1,19 +1,24 @@
-{{- $title := .Get "title" | default "Our Work" -}}
-{{- with .Page.Params.gallery -}}
-<section class="not-prose my-12">
-  <h2 class="text-2xl font-bold mb-6">{{ $title }}</h2>
-  <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-    {{- range . -}}
-      {{- if reflect.IsMap . -}}
-    <div class="overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-      {{ partial "responsive-img.html" (dict "src" .src "alt" .alt "sizes" "(min-width: 1024px) 33vw, 50vw" "class" "aspect-[4/3] w-full object-cover" "loading" "lazy") }}
-    </div>
-      {{- else -}}
-    <div class="overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-      {{ partial "responsive-img.html" (dict "src" . "alt" "" "sizes" "(min-width: 1024px) 33vw, 50vw" "class" "aspect-[4/3] w-full object-cover" "loading" "lazy") }}
-    </div>
-      {{- end -}}
-    {{- end -}}
-  </div>
-</section>
+{{/* gallery shortcode — renders an image gallery with lightbox.
+
+  On feature-layout pages: no-op. The _default/feature.html template
+  renders the gallery directly via the gallery-lightbox partial, so
+  existing gallery calls in service page markdown are harmless.
+
+  On all other layouts: delegates to the gallery-lightbox partial.
+
+  Front matter:
+    gallery:
+      - src: images/photo-1.jpg
+        alt: Description
+
+  Optional front matter:
+    gallery_title: "Custom Heading"  (overrides default "Our Work")
+*/}}
+{{- if eq .Page.Layout "feature" -}}
+  {{- /* No-op: feature layout renders gallery directly */ -}}
+{{- else -}}
+  {{- $title := .Get "title" | default (.Page.Param "gallery_title") | default "Our Work" -}}
+  {{- with .Page.Params.gallery -}}
+    {{ partial "gallery-lightbox.html" (dict "gallery" . "title" $title) }}
+  {{- end -}}
 {{- end -}}

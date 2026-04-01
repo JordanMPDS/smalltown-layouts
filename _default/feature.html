@@ -67,6 +67,13 @@
         </div>
     </div>
 
+    <!-- Gallery with Lightbox -->
+    {{ with .Params.gallery }}
+    <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        {{ partial "gallery-lightbox.html" (dict "gallery" . "title" ($.Param "gallery_title" | default "Our Work")) }}
+    </div>
+    {{ end }}
+
     <!-- Global CTA -->
     {{ partial "components/cta.html" . }}
 </article>

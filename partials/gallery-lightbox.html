@@ -1,0 +1,105 @@
+{{- /*
+  gallery-lightbox.html — shared partial for image gallery with lightbox.
+
+  Parameters (passed as a dict):
+    .gallery  — slice of gallery items (map {src, alt} or bare string)
+    .title    — heading text (default "Our Work")
+
+  Used by:
+    - _default/feature.html (rendered after two-column block)
+    - shortcodes/gallery.html (delegated for non-feature layouts)
+*/ -}}
+{{- $title := .title | default "Our Work" -}}
+{{- $gallery := .gallery -}}
+{{- $count := len $gallery -}}
+<section class="not-prose my-12">
+  <h2 class="text-2xl font-bold mb-6">{{ $title }}</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    {{- range $index, $item := $gallery -}}
+      {{- $src := "" -}}
+      {{- $alt := "" -}}
+      {{- if reflect.IsMap $item -}}
+        {{- $src = $item.src -}}
+        {{- $alt = $item.alt | default "" -}}
+      {{- else -}}
+        {{- $src = $item -}}
+      {{- end -}}
+    <button type="button" data-lb-index="{{ $index }}" class="overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer p-0 border-0 bg-transparent">
+      {{ partial "responsive-img.html" (dict "src" $src "alt" $alt "sizes" "(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw" "class" "aspect-[4/3] w-full object-cover" "loading" "lazy") }}
+    </button>
+    {{- end -}}
+  </div>
+
+  <!-- Lightbox overlay -->
+  <div class="lightbox fixed inset-0 z-50 flex items-center justify-center bg-black/90 opacity-0 pointer-events-none transition-opacity duration-200"
+       role="dialog" aria-modal="true" aria-label="Image lightbox" tabindex="-1">
+    <button class="lb-close absolute top-4 right-4 text-white/80 hover:text-white text-4xl leading-none cursor-pointer z-10" aria-label="Close lightbox">&times;</button>
+    {{ if gt $count 1 }}
+    <button class="lb-prev absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white/80 hover:text-white text-2xl leading-none cursor-pointer z-10 flex items-center justify-center" aria-label="Previous image">&#8249;</button>
+    <button class="lb-next absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white/80 hover:text-white text-2xl leading-none cursor-pointer z-10 flex items-center justify-center" aria-label="Next image">&#8250;</button>
+    {{ end }}
+    <img class="lb-img max-h-[85vh] max-w-[90vw] object-contain" src="" alt="">
+    {{ if gt $count 1 }}
+    <span class="lb-counter absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm"></span>
+    {{ end }}
+  </div>
+
+  <script>
+  (function() {
+    var section = document.currentScript.closest('section');
+    var overlay = section.querySelector('.lightbox');
+    var lbImg = overlay.querySelector('.lb-img');
+    var lbCounter = overlay.querySelector('.lb-counter');
+    var thumbs = section.querySelectorAll('[data-lb-index]');
+    var imgs = section.querySelectorAll('[data-lb-index] img');
+    var total = imgs.length;
+    var current = 0;
+    var triggerEl = null;
+
+    function show(index) {
+      current = index;
+      var img = imgs[current];
+      lbImg.src = img.currentSrc || img.src;
+      lbImg.alt = img.alt;
+      if (lbCounter) lbCounter.textContent = (current + 1) + ' / ' + total;
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+      overlay.focus();
+    }
+
+    function hide() {
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      lbImg.src = '';
+      if (triggerEl) { triggerEl.focus(); triggerEl = null; }
+    }
+
+    function prev() { show((current - 1 + total) % total); }
+    function next() { show((current + 1) % total); }
+
+    for (var i = 0; i < thumbs.length; i++) {
+      thumbs[i].addEventListener('click', function() {
+        triggerEl = this;
+        show(parseInt(this.getAttribute('data-lb-index'), 10));
+      });
+    }
+
+    overlay.querySelector('.lb-close').addEventListener('click', hide);
+    var prevBtn = overlay.querySelector('.lb-prev');
+    var nextBtn = overlay.querySelector('.lb-next');
+    if (prevBtn) prevBtn.addEventListener('click', prev);
+    if (nextBtn) nextBtn.addEventListener('click', next);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) hide(); });
+
+    overlay.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') hide();
+      else if (e.key === 'ArrowLeft') prev();
+      else if (e.key === 'ArrowRight') next();
+      else if (e.key === 'Tab') {
+        var focusable = overlay.querySelectorAll('button');
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+  })();
+  </script>
+</section>
