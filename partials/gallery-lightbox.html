@@ -24,14 +24,14 @@
       {{- else -}}
         {{- $src = $item -}}
       {{- end -}}
-    <button type="button" data-lb-index="{{ $index }}" class="overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer p-0 border-0 bg-transparent">
+    <button type="button" data-lb-index="{{ $index }}" aria-label="{{ if $alt }}Open photo: {{ $alt }}{{ else }}Open photo {{ add $index 1 }} of {{ $count }}{{ end }}" class="overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer p-0 border-0 bg-transparent">
       {{ partial "responsive-img.html" (dict "src" $src "alt" $alt "sizes" "(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw" "class" "aspect-[4/3] w-full object-cover" "loading" "lazy") }}
     </button>
     {{- end -}}
   </div>
 
   <!-- Lightbox overlay -->
-  <div class="lightbox fixed inset-0 z-50 flex items-center justify-center bg-black/90 opacity-0 pointer-events-none transition-opacity duration-200"
+  <div class="lightbox fixed inset-0 z-[200] flex items-center justify-center bg-black/90 opacity-0 pointer-events-none transition-opacity duration-200"
        role="dialog" aria-modal="true" aria-label="Image lightbox" tabindex="-1">
     <button class="lb-close absolute top-4 right-4 text-white/80 hover:text-white text-4xl leading-none cursor-pointer z-10" aria-label="Close lightbox">&times;</button>
     {{ if gt $count 1 }}
@@ -40,7 +40,7 @@
     {{ end }}
     <img class="lb-img max-h-[85vh] max-w-[90vw] object-contain" src="" alt="">
     {{ if gt $count 1 }}
-    <span class="lb-counter absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm"></span>
+    <span class="lb-counter absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm" aria-live="polite" aria-atomic="true"></span>
     {{ end }}
   </div>
 
@@ -60,13 +60,15 @@
       current = index;
       var img = imgs[current];
       lbImg.src = img.currentSrc || img.src;
-      lbImg.alt = img.alt;
+      lbImg.alt = img.alt || ('Photo ' + (current + 1) + ' of ' + total);
       if (lbCounter) lbCounter.textContent = (current + 1) + ' / ' + total;
+      document.body.style.overflow = 'hidden';
       overlay.classList.remove('opacity-0', 'pointer-events-none');
       overlay.focus();
     }
 
     function hide() {
+      document.body.style.overflow = '';
       overlay.classList.add('opacity-0', 'pointer-events-none');
       lbImg.src = '';
       if (triggerEl) { triggerEl.focus(); triggerEl = null; }
