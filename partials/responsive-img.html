@@ -41,6 +41,10 @@
   <img src="{{ $resource.RelPermalink }}" alt="{{ $alt }}"{{ with $class }} class="{{ . }}"{{ end }} loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }} decoding="async">
 {{- else -}}
   {{- $origWidth := $resource.Width -}}
+  {{- if eq $origWidth 0 -}}
+    {{- /* Hugo couldn't decode dimensions (e.g. AVIF or other unsupported format mislabeled as a raster ext). Fall back to plain <img> rather than crashing the build on Resize. */ -}}
+    <img src="{{ $resource.RelPermalink }}" alt="{{ $alt }}"{{ with $class }} class="{{ . }}"{{ end }} loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }} decoding="async">
+  {{- else -}}
   {{- /* Determine width list: use explicit if provided, otherwise auto-generate */ -}}
   {{- $widths := slice -}}
   {{- if $explicitWidths -}}
@@ -97,4 +101,5 @@
     {{- $largestImg = $resource.Resize (printf "%dx webp q%d" $origWidth $quality) -}}
   {{- end -}}
   <img src="{{ $largestImg.RelPermalink }}"{{ with $srcsetParts }} srcset="{{ delimit . ", " }}"{{ end }} sizes="{{ $sizes }}" width="{{ $largestImg.Width }}" height="{{ $largestImg.Height }}" alt="{{ $alt }}"{{ with $class }} class="{{ . }}"{{ end }} loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }} decoding="async">
+  {{- end -}}
 {{- end -}}
