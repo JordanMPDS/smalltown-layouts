@@ -1,7 +1,16 @@
 {{ define "main" }}
 <div class="container mx-auto px-4 py-8 mb-12 flex-1">
-  <h1 class="text-4xl font-bold text-center mb-4">Our Locations</h1>
-  <p class="text-lg text-gray-600 text-center mb-12">Find the location nearest you.</p>
+  <h1 class="text-4xl font-bold text-center mb-4">{{ with .Title }}{{ . }}{{ else }}Our Locations{{ end }}</h1>
+  <p class="text-lg text-gray-600 text-center mb-12">{{ with .Description }}{{ . }}{{ else }}Find the location nearest you.{{ end }}</p>
+
+  {{/* Render body of content/locations/_index.md if present — gives Google
+       substantive unique content above the cards. Without this, GSC reports
+       "Crawled - currently not indexed" for thin section list pages. */}}
+  {{ with .Content }}
+  <div class="prose prose-lg max-w-3xl mx-auto mb-12 text-gray-700">
+    {{ . }}
+  </div>
+  {{ end }}
 
   {{- $locations := site.Params.locations -}}
   {{- if $locations -}}
