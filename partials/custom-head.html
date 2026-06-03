@@ -121,10 +121,13 @@
   {{- $schema = merge $schema (dict "department" $departments) -}}
 {{- end -}}
 
-{{ with $p.logo }}
+{{/* og:image: baseof.html already emits it from params.image (the 1200x630
+     share PNG). Only fall back to the logo here when no params.image is set,
+     so sites with a real share image don't get a duplicate/conflicting tag. */}}
+{{ if not $p.image }}{{ with $p.logo }}
 <meta property="og:image" content="{{ . | absURL }}">
 <meta property="og:image:alt" content="{{ $.Site.Title }}">
-{{ end }}
+{{ end }}{{ end }}
 
 <!-- Self-hosted font preloads -->
 <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
