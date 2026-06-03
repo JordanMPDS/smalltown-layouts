@@ -70,7 +70,7 @@
     {{- $rasterExts := slice ".png" ".jpg" ".jpeg" ".webp" ".gif" ".tif" ".tiff" ".bmp" -}}
     {{- if and $res $favSrc (eq $ext ".svg") }}
     <link rel="icon" type="image/svg+xml" href="{{ $res.RelPermalink }}">
-    {{- else if and $res (in $rasterExts $ext) (eq $res.ResourceType "image") }}
+    {{- else if and $res (in $rasterExts $ext) (eq $res.ResourceType "image") (gt $res.Width 0) }}
     {{- $sq := $res.Process "fill 180x180 center png" -}}
     {{- $i32 := $sq.Process "resize 32x32 png" -}}
     <link rel="icon" type="image/png" sizes="32x32" href="{{ $i32.RelPermalink }}">
