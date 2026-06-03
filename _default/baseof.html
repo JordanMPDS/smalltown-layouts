@@ -54,8 +54,30 @@
     {{ end }}
     {{ end }}
 
-    <!-- Favicon -->
+    <!-- Favicon — auto-derived from the site's logo so the browser tab matches
+         the brand with zero per-site setup. Priority:
+           1. params.favicon (a square icon: svg or raster) when set
+           2. params.logo when it's a raster Hugo can process (png/jpg/jpeg/webp/gif)
+           3. static/images/favicon.ico fallback
+         SVG *logos* are skipped (usually wide wordmarks); provide a square
+         params.favicon for an SVG-based icon. Never points at the theme default. -->
+    {{- $favSrc := .Site.Params.favicon -}}
+    {{- $logoSrc := .Site.Params.logo -}}
+    {{- $src := or $favSrc $logoSrc -}}
+    {{- $ext := strings.ToLower (path.Ext (string $src)) -}}
+    {{- $res := "" -}}
+    {{- with $src }}{{ $res = resources.Get (strings.TrimPrefix "/" .) }}{{ end -}}
+    {{- $rasterExts := slice ".png" ".jpg" ".jpeg" ".webp" ".gif" ".tif" ".tiff" ".bmp" -}}
+    {{- if and $res $favSrc (eq $ext ".svg") }}
+    <link rel="icon" type="image/svg+xml" href="{{ $res.RelPermalink }}">
+    {{- else if and $res (in $rasterExts $ext) (eq $res.ResourceType "image") }}
+    {{- $sq := $res.Process "fill 180x180 center png" -}}
+    {{- $i32 := $sq.Process "resize 32x32 png" -}}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ $i32.RelPermalink }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $sq.RelPermalink }}">
+    {{- else }}
     <link rel="icon" type="image/x-icon" href="{{ "images/favicon.ico" | relURL }}">
+    {{- end }}
 
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ .Permalink }}">
