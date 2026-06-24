@@ -34,12 +34,27 @@ jobs:
           while IFS= read -r project; do
             echo ""
             echo "Triggering: $project"
-            # Read each project's production branch from the API. Defaults
-            # to "main" on lookup failure — every current client uses main.
-            prod_branch=$(curl -sf \
+            # Read the project detail once: production branch + git source.
+            # production_branch defaults to "main" on lookup failure — every
+            # current git-connected client uses main.
+            project_json=$(curl -sf \
               "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${project}" \
-              -H "Authorization: Bearer ${CF_API_TOKEN}" \
-              | jq -r '.result.production_branch // "main"')
+              -H "Authorization: Bearer ${CF_API_TOKEN}")
+            prod_branch=$(echo "$project_json" | jq -r '.result.production_branch // "main"')
+
+            # Skip direct-upload projects (no connected git repo). They have
+            # no source and can't be redeployed via the deployments API —
+            # CF returns 400 / error 8000096 ("manifest field expected")
+            # because direct-upload deployments require an asset manifest.
+            # These projects (e.g. prospects-ui, a SvelteKit SPA shipped via
+            # 'wrangler pages deploy') also don't consume the layouts
+            # submodule, so a layouts push never needs to rebuild them.
+            source_type=$(echo "$project_json" | jq -r '.result.source.type // empty')
+            if [ -z "$source_type" ]; then
+              echo "  Skipped (direct-upload): no connected git repo"
+              skipped=$((skipped + 1))
+              continue
+            fi
             echo "  Production branch: $prod_branch"
 
             # POST with explicit branch as multipart form data. Without an
