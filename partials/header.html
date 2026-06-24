@@ -38,7 +38,7 @@
                             </div>
                         </div>
                         {{ else }}
-                        <a href="{{ .URL }}" class="{{ with $headerConfig.menu.linkClass }}{{ . }}{{ else }}text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200{{ end }}">{{ .Name }}</a>
+                        <a href="{{ .URL | replaceRE "#(.+)/$" "#$1" }}" class="{{ with $headerConfig.menu.linkClass }}{{ . }}{{ else }}text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200{{ end }}">{{ .Name }}</a>
                         {{ end }}
                     {{ end }}
 
@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     {{ else }}
-                    <a href="{{ .URL }}" class="{{ with $headerConfig.menu.mobileLinkClass }}{{ . }}{{ else }}block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2{{ end }}">{{ .Name }}</a>
+                    <a href="{{ .URL | replaceRE "#(.+)/$" "#$1" }}" class="{{ with $headerConfig.menu.mobileLinkClass }}{{ . }}{{ else }}block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2{{ end }}">{{ .Name }}</a>
                     {{ end }}
                 {{ end }}
 
