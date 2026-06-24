@@ -93,7 +93,7 @@ jobs:
 
           if [ $skipped -gt 0 ]; then
             echo ""
-            echo "$skipped project(s) skipped (HTTP 304). Push a no-op commit to the affected client repo if the layouts change must roll out immediately."
+            echo "$skipped project(s) skipped (direct-upload or HTTP 304). For an HTTP 304 skip, push a no-op commit to the affected client repo if the layouts change must roll out immediately."
           fi
 
           echo ""
