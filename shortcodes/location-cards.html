@@ -10,10 +10,10 @@
     {{ end }}
     {{ with .phone }}
     <p style="margin:0 0 .75rem;">
-      <a href="{{ printf "tel:%s" $phoneRaw | safeURL }}" style="color:#b45309;font-weight:600;text-decoration:none;">{{ . }}</a>
+      <a href="{{ printf "tel:%s" $phoneRaw | safeURL }}" style="color:#b85c38;font-weight:600;text-decoration:none;">{{ . }}</a>
     </p>
     {{ end }}
-    <a href="/locations/{{ .slug }}/" style="color:#b45309;font-weight:600;text-decoration:none;">View hours &amp; details &rarr;</a>
+    <a href="/locations/{{ .slug }}/" style="color:#b85c38;font-weight:600;text-decoration:none;">View hours &amp; details &rarr;</a>
   </div>
   {{- end }}
 </div>
